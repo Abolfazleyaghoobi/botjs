@@ -22,7 +22,23 @@ import specialPromotion from './actions/upgrade/specialPromotion.js';
 const token = process.env.TOKEN_BOT; 
 
 const bot = new Telegraf(token); 
- 
+ bot.use((ctx, next) => {
+  // اگر چت وجود نداره
+  if (!ctx.chat) return;
+
+  // اگر PV هست
+  if (ctx.chat.type === "private") {
+    // فقط /start اجازه اجرا داره
+    if (ctx.message?.text === "/start") {
+      return next();
+    }
+    return;
+  }
+
+  // group / supergroup
+  return next();
+});
+
 bot.start(start);
 bot.on("message", text);
 
@@ -141,3 +157,4 @@ export default bot;
 
 // creator
 // administrator
+
